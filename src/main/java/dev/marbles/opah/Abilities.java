@@ -190,7 +190,7 @@ final class Abilities {
         if (ab > 0) { double take = Math.min(ab, amt); t.setAbsorptionAmount(ab - take); amt -= take; }
         if (amt <= 0) return;
         double nh = t.getHealth() - amt;
-        if (nh <= 0) { if (popTotem(t)) return; t.setKiller(c.p); t.setHealth(0); } else t.setHealth(nh);
+        if (nh <= 0) { if (popTotem(t)) return; giveKillCredit(t, c.p); t.setHealth(0); } else t.setHealth(nh);
     }
 
     /** Lethal ability damage respects Totems of Undying (main hand or off hand), like vanilla. */
@@ -213,8 +213,13 @@ final class Abilities {
         t.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 100, 1));
         t.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 800, 0));
         pl().allowBuff = false;
-        t.playEffect(org.bukkit.EntityEffect.PROTECTED_FROM_DEATH);
+        t.getWorld().spawnParticle(Particle.TOTEM_OF_UNDYING, t.getLocation().add(0, 1, 0), 50, 0.4, 0.6, 0.4, 0.3);
+        snd(t.getLocation(), Sound.ITEM_TOTEM_USE, 1f, 1f);
         return true;
+    }
+
+    static void giveKillCredit(LivingEntity t, Player killer) {
+        try { LivingEntity.class.getMethod("setKiller", Player.class).invoke(t, killer); } catch (Exception ignored) { }
     }
 
     static void bonusHit(Player p, LivingEntity t, double hearts) { hurt(new Ctx(p), t, hearts); }
@@ -1390,8 +1395,8 @@ final class Extras implements Listener {
 
     // ---------- pets: tamed Wardens (Sculk) and Thralls (Death) ----------
     void sun(Mob m) {
-        if (m instanceof Zombie z) z.setShouldBurnInDaylight(false);
-        else if (m instanceof AbstractSkeleton s) s.setShouldBurnInDaylight(false);
+        if (m instanceof Zombie || m instanceof AbstractSkeleton)
+            m.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, PotionEffect.INFINITE_DURATION, 0, false, false));
     }
 
     void makePet(Mob m, Player owner, String kind) {
