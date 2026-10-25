@@ -1,0 +1,135 @@
+# ===== Marbles OP AH Abilities - config =====
+# Durations are in seconds, damage in hearts (1 heart = 2 HP), ranges/radius in blocks.
+# Levels are potion levels (1 = level I). Use /marbles reload after editing.
+
+# ---- Energy ----
+start-energy: 3
+max-energy: 5                 # energy cap (kills/marbles can't push you above this)
+kill-energy-gain: 1
+death-energy-loss: 1
+deathban-energy: -5
+deathban-minutes: 1440        # 0 = permanent
+unlock-ability-1: 3           # energy needed for F
+unlock-ability-2: 5           # energy needed for Shift+F
+passive-min-energy: 0         # passive works at or above this
+withdraw-min-energy: 0        # /withdraw can't take you below this
+
+# ---- Visual effects ----
+particles:
+  enabled: true
+  density: 2.0               # 0.25 = light (low-end PCs), 1.0 = normal, 2.0 = max flashy
+
+# ---- Global combat rules ----
+damage-cap-hearts: 4          # max true damage one activation can do to one target
+crowd-control:
+  boss-duration-multiplier: 0.5
+  immunity-seconds: 4         # after being immobilized you can't be immobilized again for this long
+
+# ---- Trust: /trust <player>, /trust accept|deny <player>, /untrust <player>, /trustlist ----
+# Trusted players are mutual: your abilities (damage, stuns, pulls, debuffs, domains, clones...) skip each other.
+trust:
+  enabled: true
+  require-accept: true        # false = /trust <player> links you instantly
+  request-expire-seconds: 60
+  max-trusted: 5
+  block-melee: false          # true = trusted players also can't hit each other with normal attacks
+
+# ---- Resource pack (icons + orb models) ----
+# Host MarblesOPAH-ResourcePack.zip somewhere with a DIRECT download link (e.g. a GitHub Release asset) and paste it here.
+# The plugin sends it to players on join, so you don't need to edit server.properties.
+resource-pack:
+  url: ""
+  sha1: ""                    # optional 40-character sha1 of the zip
+  force: false
+  prompt: "Marbles OP AH icons and items"
+
+# ---- HUD ----
+hud:
+  mode: icons                 # icons | text | auto (icons unless the player refuses the pack). Players can use /hud
+
+# ---- Items ----
+items:
+  material: PLAYER_HEAD       # base item of Energy Marble / Reroller
+  use-custom-model: true      # emblems/marbles use the resource pack models | false = plain heads
+
+join-animation:
+  enabled: true
+  every-join: true          # false = only the very first join
+  play-on-reroll: true
+  start-delay-ticks: 20
+
+# Dragon / Sculk / Death / Divine come as flat icon items (/marbles give dragon|sculk|death|divine). Right-click = equip,
+# replacing your current element. Dying drops the emblem and puts you back on your normal element.
+equip:
+  allow-unequip: true         # /unequip takes the emblem off and hands it back
+
+reroll:
+  avoid-same: true            # reroll can't give you your current element
+  reset-cooldowns: true
+
+# ---- Abilities ----
+# Ability 1 (F) = first listed, Ability 2 (Shift+F) = second.
+# STUN = can't move, attack or use abilities; they can still eat and drink/throw potions.
+# (Stone Prison, Piercing Icicle and Worldroot stun. Molten Prison only locks movement.)
+abilities:
+  fire:
+    inferno:        {cooldown: 35, radius: 10, damage: 4, fire-seconds: 3}
+    flame-dash:     {cooldown: 20, distance: 12, damage: 2}
+    passive:        {fire-immunity: true, ignite-chance: 0.15, ignite-seconds: 2}
+  water:
+    tsunami:        {cooldown: 35, range: 20, width: 3.2, damage: 3, pull-strength: 1.1}
+    whirlpool:      {cooldown: 30, range: 15, radius: 7, duration: 3, pull-strength: 0.45}
+    passive:        {water-breathing: true, dolphins-grace-level: 1}
+  lightning:
+    thunderbolt:    {cooldown: 30, range: 25, damage: 4}
+    chain-lightning: {cooldown: 40, range: 20, clones: 4, damage: 1, radius: 3.0, delay-ticks: 6}
+    passive:        {speed-level: 1, hits-required: 8, internal-cooldown: 12, damage: 1}
+  earth:
+    earthquake:     {cooldown: 40, radius: 10, damage: 4, launch: 1.0}
+    stone-prison:   {cooldown: 35, range: 15, stun-seconds: 3, block: STONE}
+    passive:        {resistance-level: 1, knockback-reduction: 0.5}
+  ice:
+    glacial-burst:  {cooldown: 35, radius: 8, damage: 3, slowness-level: 4, slowness-seconds: 3}
+    piercing-icicle: {cooldown: 25, range: 25, damage: 2, stun-seconds: 3, block: ICE, weakness-level: 0, weakness-seconds: 4}
+    passive:        {resistance-level: 1, resistance-seconds: 3, internal-cooldown: 15}
+  wind:
+    cyclone:        {cooldown: 35, range: 15, radius: 4.5, duration: 3, damage: 3, lift: 0.8}
+    gale-strike:    {cooldown: 20, distance: 15, damage: 2, knockback: 0.8}
+    passive:        {speed-level: 2, fall-immunity: true}
+  void:
+    event-horizon:  {cooldown: 45, range: 20, pull-radius: 8, pull-seconds: 2, pull-strength: 0.4, explosion-radius: 6, damage: 4}
+    riftwalk:       {cooldown: 30, range: 15, blindness-seconds: 2, bonus-window-seconds: 3, bonus-damage: 2}
+    passive:        {night-vision: true, blindness-immunity: true}
+  nature:
+    worldroot:      {cooldown: 35, radius: 8, stun-seconds: 3, damage: 2}
+    rebirth:        {cooldown: 60, heal-hearts: 6, regen-level: 4, regen-seconds: 5, armor-repair: 30, leech-seconds: 5, leech-percent: 0.25, leech-cap-hearts: 2}
+    passive:        {hero-of-the-village-level: 4, gapple-multiplier: 2.0}   # gapple-multiplier: golden apples give this x absorption and saturation
+  light:
+    divine-smite:   {cooldown: 35, range: 20, damage: 4, buff-removal-seconds: 15}
+    flashbang:      {cooldown: 40, radius: 10, blind-seconds: 3, disable-seconds: 3}
+    passive:        {night-vision: true, damage-multiplier: 1.15}
+  magma:
+    eruption:       {cooldown: 40, range: 20, radius: 6, damage: 4, launch: 0.8}
+    molten-prison:  {cooldown: 30, range: 15, duration: 2, damage: 2}
+    passive:        {fire-immunity: true, armor-durability-multiplier: 1.15}   # armor lasts 1.15x as long
+
+  # ---- ADMIN-ONLY elements (never rolled): /marbles element <dragon|sculk|death|divine> [player] ----
+  # Passives for these also give a themed potion: extra-effect / extra-level (set level 0 to disable).
+  dragon:
+    # F once: a dragon appears above you (ready-seconds to use it). F again: it flies forward.
+    dragons-descent: {cooldown: 45, ready-seconds: 15, range: 30, speed: 2.0, radius: 3.5, damage: 4, destroy-blocks: true, yaw-offset: 180}
+    crystal-chaos:  {cooldown: 60, crystals: 6, radius: 10, duration-seconds: 30, effect-range: 20, regen-level: 4, repair-per-second: 4}
+    passive:        {speed-level: 2, strength-level: 2, resistance-level: 1, double-jump: true, void-immunity: true}
+  sculk:
+    wardens-wrath:  {cooldown: 35, beams: 5, beam-delay-ticks: 4, range: 30, damage: 1, armor-durability-damage: 15}
+    # cooldown starts AFTER the domain ends
+    wardens-domain: {cooldown: 60, radius: 20, duration-seconds: 60, block: SCULK, weakness-level: 1, slowness-level: 1, resistance-level: 3}
+    passive:        {speed-level: 2, strength-level: 2, resistance-level: 1, extra-effect: night_vision, extra-level: 1, glowing-radius: 50, darkness-seconds: 5, max-tamed: 1}
+  death:
+    reapers-sentence: {cooldown: 600, range: 40, duration-seconds: 300, slowness-level: 2, weakness-level: 1}
+    inevitable-death: {cooldown: 43200, duration-seconds: 3600}
+    passive:        {speed-level: 2, strength-level: 2, resistance-level: 1, extra-effect: health_boost, extra-level: 1, max-minions: 10, lifesteal-hearts: 0.5, min-attack-strength: 0.9}
+  divine:
+    divine-judgement: {cooldown: 30, range: 30, damage: 4, blind-seconds: 5, weakness-level: 2, weakness-seconds: 5}
+    divine-authority: {cooldown: 30, range: 30, damage: 2, weakness-level: 2, slowness-level: 2, duration-seconds: 20}
+    passive:        {speed-level: 2, strength-level: 2, resistance-level: 1, double-jump: true, extra-effect: regeneration, extra-level: 1, hits-required: 5, damage: 1}
