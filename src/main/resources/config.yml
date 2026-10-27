@@ -6,6 +6,7 @@
 start-energy: 3
 max-energy: 5                 # energy cap (kills/marbles can't push you above this)
 kill-energy-gain: 1
+drop-overflow-energy: true     # kill at max energy -> the energy drops as an Energy Marble item
 death-energy-loss: 1
 deathban-energy: -5
 deathban-minutes: 1440        # 0 = permanent
