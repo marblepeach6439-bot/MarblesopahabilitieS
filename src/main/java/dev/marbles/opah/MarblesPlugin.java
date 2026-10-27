@@ -408,7 +408,16 @@ public final class MarblesPlugin extends JavaPlugin implements Listener {
             if (oe != null) v.getWorld().dropItemNaturally(v.getLocation(), elementItem(oe));
             v.sendMessage(msg("Your " + (oe == null ? "" : oe.display + " ") + "emblem dropped. You're back to " + element(v).display + ".", NamedTextColor.GOLD));
         }
-        if (k != null && k != v) setEnergy(k, Math.min(ci("max-energy"), energy(k) + ci("kill-energy-gain")));
+        if (k != null && k != v) {
+            int gain = ci("kill-energy-gain");
+            int add = Math.min(gain, Math.max(0, ci("max-energy") - energy(k)));
+            int overflow = gain - add;                 // energy that doesn't fit under the cap
+            if (add > 0) setEnergy(k, energy(k) + add);
+            if (overflow > 0 && getConfig().getBoolean("drop-overflow-energy", true)) {
+                v.getWorld().dropItemNaturally(v.getLocation(), item("energy", overflow));
+                k.sendMessage(msg("You're at max energy, so the kill dropped an Energy Marble.", NamedTextColor.GOLD));
+            }
+        }
         setEnergy(v, energy(v) - ci("death-energy-loss"));
     }
 
